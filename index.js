@@ -1,35 +1,33 @@
+const http = require('http')
+const auth = require('basic-auth')
+const compare = require('tsscmp')
+const deploy = require("./scripts/foetusfood-backoffice");
 
-import bodyParser from 'body-parser'
-import express from 'express'
-import foetusfoodController from './app/controllers/foetusfood.controller.js'
+// Create server
+var server = http.createServer(function (req, res) {
+    var credentials = auth(req)
 
-const app = express();
+    // Check credentials
+    // The "check" function will typically be against your user store
+    if (!credentials || !check(credentials.name, credentials.pass)) {
+        res.statusCode = 401
+        res.setHeader('WWW-Authenticate', 'Basic realm="deploy foetusfood"')
+        res.end('Access denied')
+    } else {
+        res.end(deploy());
+    }
+})
 
-// var corsOptions = {
-//     origin: "http://localhost:4200"
-// };
-//
-// app.use(cors(corsOptions));
+// Basic function to validate credentials for example
+function check (name, pass) {
+    var valid = true
 
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
+    // Simple method to prevent short-circut and use timing-safe compare
+    valid = compare(name, 'branlicot') && valid
+    valid = compare(pass, 'br4nl1c0t') && valid
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+    return valid
+}
 
-// simple route
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to foetusfood application." });
-});
-
-var router = express.Router();
-// Create a new Tutorial
-router.get("/foetusfood", foetusfoodController.deploy);
-
-app.use('/api/', router);
-
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
-});
+// Listen
+server.listen(3000)
