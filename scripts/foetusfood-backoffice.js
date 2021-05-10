@@ -1,4 +1,5 @@
 // import * as child from 'child_process';
+const { exec } = require('child_process');
 
 const commands = [
 	`eval $(ssh-agent)`,
@@ -13,7 +14,7 @@ const commands = [
 module.exports = function deploy() {
 	const cmd = commands.join(' && ');
 	console.log(`###### executing: '${cmd}'`);
-	child.exec(cmd, function(err, stdout, stderr) {
+	exec(cmd, function(err, stdout, stderr) {
 		return err
 			? `error: ${err.message}`
 			: `${stderr}\r\n${stdout}`;
