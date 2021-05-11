@@ -3,8 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Deploy stuff</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-<a href="vps-76fa8966.vps.ovh.net:3000" target="_blank">Deploy foetusfood backoffice</a>
+	<div id="deploy-foetusfood-backoffice" style="display: none;">
+		<div class="link">
+			<a href="vps-76fa8966.vps.ovh.net:3000" target="_blank">Déployer foetusfood backoffice</a>
+		</div>
+		<div class="error">
+			<p>Un déploiement est déjà en cours.</p>
+		</div>
+	</div>
+	<script type="text/javascript">
+		jQuery( document ).ready(function() 
+		{
+			const jDivError = jQuery("#deploy-foetusfood-backoffice .error");
+	                const jDivLink = jQuery("#deploy-foetusfood-backoffice .link");
+			
+			jQuery.get('http://vps-76fa8966.vps.ovh.net/deploy/foetusfood-backoffice.deploy',
+			function (data) {
+				jQuery("#deploy-foetusfood-backoffice").show();
+				if (data === '')
+				{
+					jDivError.show();
+					jDivLink.hide();
+				} else
+				{
+					jDivError.hide();
+					jDivLink.show();
+				}
+			});
+		});
+	</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const http = require('http')
 const auth = require('basic-auth')
 const compare = require('tsscmp')
 const deploy = require("./scripts/foetusfood-backoffice");
+const fs = require('fs');
 
 // Create server
 var server = http.createServer(function (req, res) {
@@ -14,7 +15,9 @@ var server = http.createServer(function (req, res) {
         res.setHeader('WWW-Authenticate', 'Basic realm="deploy foetusfood"')
         res.end('Access denied')
     } else {
-        res.end(deploy());
+	    deploy();
+	    res.end("starting deployment");
+        //res.end(deploy());
     }
 })
 
